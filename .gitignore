@@ -1,0 +1,12 @@
+**/.vs
+**/.vscode
+**/.idea
+**/bin
+**/obj
+*.db*
+*.suo
+*.user
+[Pp]ackages/
+Thumbs.db
+Desktop.ini
+.DS_Store
