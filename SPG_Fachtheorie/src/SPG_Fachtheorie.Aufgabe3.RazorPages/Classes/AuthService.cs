@@ -1,21 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace SPG_Fachtheorie.Aufgabe3.RazorPages.Classes
 {
     public class AuthService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-
         public AuthService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
-
         public async Task<bool> TryLogin(int id)
         {
             if (_httpContextAccessor.HttpContext is null) { return false; }
@@ -49,5 +43,5 @@ namespace SPG_Fachtheorie.Aufgabe3.RazorPages.Classes
 
         public int? AdminId => int.TryParse(_httpContextAccessor.HttpContext?.User.Identity?.Name, out var adminId)
             ? adminId : null;
-    }
+   }
 }

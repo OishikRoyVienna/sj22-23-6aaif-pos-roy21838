@@ -1,0 +1,25 @@
+﻿@page
+@model SPG_Fachtheorie.Aufgabe3.RazorPages.Pages.Playlist.IndexModel
+@{
+    <h1>Playlist Index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>User Name</th>
+                <th>Anzahl der Podcasts</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var playlist in Model.Playlists)
+            {
+                <tr>
+                    <td>@playlist.Name</td>
+                    <td>@playlist.UserName</td>
+                    <td>@playlist.NumberOfPodcasts</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

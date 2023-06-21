@@ -1,0 +1,41 @@
+﻿@page
+@model SPG_Fachtheorie.Aufgabe3.RazorPages.Pages.Advertisement.CreateModel
+@{
+}
+
+
+<h1>Create Advertisement</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" class="form-control" asp-for="NewAdvertisement.ProductName" />
+            <span asp-validation-for="NewAdvertisement.ProductName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="production">Production Date:</label>
+        <input type="date" id="production" class="form-control" asp-for="NewAdvertisement.Production" />
+        <span asp-validation-for="NewAdvertisement.Production" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="length">Length:</label>
+            <input type="number" id="length" class="form-control" asp-for="NewAdvertisement.Length" />
+            <span asp-validation-for="NewAdvertisement.Length" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="minPlayTime">Min Play Time:</label>
+            <input type="number" id="minPlayTime" class="form-control" asp-for="NewAdvertisement.MinPlayTime" />
+            <span asp-validation-for="NewAdvertisement.MinPlayTime" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="costsPerPlay">Costs Per Play:</label>
+            <input type="number" step="0.01" id="costsPerPlay" class="form-control" asp-for="NewAdvertisement.CostsPerPlay" />
+            <span asp-validation-for="NewAdvertisement.CostsPerPlay" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="customerId">Customer:</label>
+            <select id="customerId" class="form-control" asp-for="NewAdvertisement.CustomerId" asp-items="@Model.Customers"></select>
+            <span asp-validation-for="NewAdvertisement.CustomerId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
