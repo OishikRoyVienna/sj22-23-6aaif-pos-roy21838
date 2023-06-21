@@ -1,13 +1,12 @@
+using AutoMapper; 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SPG_Fachtheorie.Aufgabe2.Domain;
 using SPG_Fachtheorie.Aufgabe2.Infrastructure;
 using SPG_Fachtheorie.Aufgabe3.RazorPages.Classes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+using SPG_Fachtheorie.Aufgabe3.RazorPages.Dto;
 
 namespace SPG_Fachtheorie.Aufgabe3.RazorPages.Pages.Advertisement
 {
@@ -15,62 +14,73 @@ namespace SPG_Fachtheorie.Aufgabe3.RazorPages.Pages.Advertisement
     {
         private readonly PodcastContext _db;
         private readonly AuthService _authService;
-        public CreateModel(PodcastContext db, AuthService authService)
+        private readonly IMapper _mapper;
+        public CreateModel(PodcastContext db, AuthService authService, IMapper mapper)
         {
             _db = db;
             _authService = authService;
+            _mapper = mapper;
         }
-        public record NewAddCmd(
-            [StringLength(255, MinimumLength = 3, ErrorMessage = "Invalid ProductName")] string ProductName,
-            int Length,
-            DateTime Production,
-            int? MinPlayTime,
-            decimal CostsPerPlay,
-            int CustomerId);
+
+        public List<SelectListItem> Customers { get; set; } = new List<SelectListItem>();
 
         [BindProperty]
-        public NewAddCmd Advertisement { get; set; } = default!;
+        public NewAdvertisementDto NewAdvertisement { get; set; }
 
-        public List<SelectListItem> CustomersList =>
-        _db.Customers.Where(c => c.ResponsibleAdminId == _authService.AdminId)
-            .Select(c => new SelectListItem($"{c.FirstName} {c.LastName}", c.Id.ToString())).ToList();
+        public IActionResult OnGet()
+        {
+            Customers = _db.Customers
+                .Where(c => c.ResponsibleAdmin.Id == _authService.AdminId)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = $"{c.FirstName} {c.LastName}"
+                })
+                .ToList();
+
+            return Page();
+        }
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid) {return Page();}
-            var customer = _db.Customers.FirstOrDefault(c => c.Id == Advertisement.CustomerId);
-            if (customer is null) { return Page(); }
-            if (customer.RegistrationDate > Advertisement.Production)
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Dates are incorrect");
+                Customers = _db.Customers
+                .Where(c => c.ResponsibleAdmin.Id == _authService.AdminId)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = $"{c.FirstName} {c.LastName}"
+                })
+                .ToList();
                 return Page();
             }
-            var advert = new Aufgabe2.Domain.Advertisement
-            {
-                CustomerId = Advertisement.CustomerId,
-                ProductName = Advertisement.ProductName,
-                Length = Advertisement.Length,
-                Production = Advertisement.Production,
-                MinPlayTime = Advertisement.MinPlayTime,
-                CostsPerPlay = Advertisement.CostsPerPlay
-            };
 
-            _db.Advertisements.Add(advert);
-
-            try
+            foreach (var modelStateEntry in ModelState.Values)
             {
-                _db.SaveChanges();
+                foreach (var error in modelStateEntry.Errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
             }
-            catch (DbUpdateException e)
+
+            var selectedCustomerId = NewAdvertisement.CustomerId;
+            var customer = _db.Customers.Include(c => c.Advertisements).FirstOrDefault(c => c.Id == selectedCustomerId);
+
+            if (customer == null)
             {
-                ModelState.AddModelError("", e.InnerException?.Message ?? e.Message);
+                ModelState.AddModelError("", "Ungültiger Kunde ausgewählt.");
                 return Page();
             }
+
+            var newAdvertisement = _mapper.Map<Aufgabe2.Domain.Advertisement>(NewAdvertisement);
+            newAdvertisement.Customer = customer;
+            newAdvertisement.ItemType = "Advertisement";
+
+            _db.Advertisements.Add(newAdvertisement);
+            _db.SaveChanges();
+
             return RedirectToPage("/Customer/Index");
-        }
-
-        public void OnGet()
-        {
         }
     }
 }

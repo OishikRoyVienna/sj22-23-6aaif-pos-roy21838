@@ -1,9 +1,7 @@
 using SPG_Fachtheorie.Aufgabe2.Infrastructure;
 using SPG_Fachtheorie.Aufgabe3.RazorPages.Classes;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using SPG_Fachtheorie.Aufgabe3.RazorPages.Dto;
 
 var options = new DbContextOptionsBuilder()
     .UseSqlite("Data Source=Podcast.db")
@@ -17,7 +15,7 @@ using (var db = new PodcastContext(options))
 }
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(); 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<PodcastContext>(opt => opt.UseSqlite("Data Source=Podcast.db"));
 builder.Services.AddHttpContextAccessor();
@@ -29,7 +27,7 @@ builder.Services.AddAuthentication(
         o.LoginPath = "/";
         o.AccessDeniedPath = "/NotAuthorized";
     });
-
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

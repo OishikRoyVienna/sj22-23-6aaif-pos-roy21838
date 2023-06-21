@@ -1,0 +1,47 @@
+﻿@page "{Id}"
+@model SPG_Fachtheorie.Aufgabe3.RazorPages.Pages.Advertisement.DetailsModel
+
+<h1>Advertisement Details</h1>
+
+@if (Model.Advertisement != null)
+{
+    <table>
+        <tr>
+            <th>Id</th>
+            <td>@Model.Advertisement.Id</td>
+        </tr>
+        <tr>
+            <th>Product Name</th>
+            <td>@Model.Advertisement.ProductName</td>
+        </tr>
+        <tr>
+            <th>Customer</th>
+            <td>@Model.Advertisement.Customer.LastName @Model.Advertisement.Customer.FirstName</td>
+        </tr>
+        <tr>
+            <th>Production Date</th>
+            <td>@Model.Advertisement.Production</td>
+        </tr>
+        <tr>
+            <th>Length</th>
+            <td>@Model.Advertisement.Length</td>
+        </tr>
+        <tr>
+            <th>Min Play Time</th>
+            <td>@Model.Advertisement.MinPlayTime</td>
+        </tr>
+        <tr>
+            <th>Costs Per Play</th>
+            <td>@Model.Advertisement.CostsPerPlay</td>
+        </tr>
+        <tr>
+            <th>Anzahl der Aufrufe</th>
+            <td>@Model.Advertisement.ListenedItems.Count</td>
+        </tr>
+    </table>
+
+}
+else
+{
+    <p>Advertisement not found.</p>
+}
