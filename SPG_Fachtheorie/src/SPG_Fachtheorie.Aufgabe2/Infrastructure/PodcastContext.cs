@@ -20,6 +20,7 @@ namespace SPG_Fachtheorie.Aufgabe2.Infrastructure
         public DbSet<ListenedItem> ListenedItems => Set<ListenedItem>();
         public DbSet<Playlist> Playlists => Set<Playlist>();
 
+
         public PodcastContext()
         { }
         public PodcastContext(DbContextOptions options)
